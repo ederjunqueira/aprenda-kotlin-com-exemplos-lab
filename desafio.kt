@@ -1,21 +1,53 @@
-// [Template no Kotlin Playground](https://pl.kotl.in/WcteahpyN)
+import kotlin.random.Random
 
-enum class Nivel { BASICO, INTERMEDIARIO, DIFICIL }
+class DesafioBootcamp(private val limiteInferior: Int, private val limiteSuperior: Int) {
 
-class Usuario
+    private val numeroAleatorio: Int = gerarNumeroAleatorio()
 
-data class ConteudoEducacional(var nome: String, val duracao: Int = 60)
+    private fun gerarNumeroAleatorio(): Int {
+        return Random.nextInt(limiteInferior, limiteSuperior)
+    }
 
-data class Formacao(val nome: String, var conteudos: List<ConteudoEducacional>) {
+    fun verificarPalpite(palpite: Int): ResultadoPalpite {
+        return when {
+            palpite == numeroAleatorio -> ResultadoPalpite.CORRETO
+            palpite < numeroAleatorio -> ResultadoPalpite.MAIOR
+            else -> ResultadoPalpite.MENOR
+        }
+    }
 
-    val inscritos = mutableListOf<Usuario>()
-    
-    fun matricular(usuario: Usuario) {
-        TODO("Utilize o parâmetro $usuario para simular uma matrícula (usar a lista de $inscritos).")
+    enum class ResultadoPalpite {
+        CORRETO,
+        MAIOR,
+        MENOR
     }
 }
 
 fun main() {
-    TODO("Analise as classes modeladas para este domínio de aplicação e pense em formas de evoluí-las.")
-    TODO("Simule alguns cenários de teste. Para isso, crie alguns objetos usando as classes em questão.")
+    val limiteInferior = 1
+    val limiteSuperior = 100
+    val desafio = DesafioBootcamp(limiteInferior, limiteSuperior)
+
+    println("Bem-vindo ao Desafio do Bootcamp!")
+    println("Tente adivinhar o número entre $limiteInferior e $limiteSuperior.")
+
+    var tentativas = 0
+    var palpite: Int
+    var resultado: DesafioBootcamp.ResultadoPalpite? = null
+
+    do {
+        print("Digite seu palpite: ")
+        val palpiteStr = readLine() ?: continue
+        palpite = palpiteStr.toIntOrNull() ?: continue
+
+        resultado = desafio.verificarPalpite(palpite)
+        when (resultado) {
+            DesafioBootcamp.ResultadoPalpite.CORRETO -> println("Parabéns! Você acertou o número em $tentativas tentativas.")
+            DesafioBootcamp.ResultadoPalpite.MAIOR -> println("Tente novamente! O número é maior.")
+            DesafioBootcamp.ResultadoPalpite.MENOR -> println("Tente novamente! O número é menor.")
+        }
+
+        tentativas++
+    } while (resultado != DesafioBootcamp.ResultadoPalpite.CORRETO)
 }
+
